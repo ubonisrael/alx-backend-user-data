@@ -22,6 +22,7 @@ def get_logger() -> logging.Logger:
     handler = logging.StreamHandler()
     handler.setFormatter(RedactingFormatter)
     logger.addHandler(handler)
+    logger.propagate = False
     return logger
 
 
