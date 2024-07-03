@@ -8,9 +8,8 @@ import re
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """returns the log message obfuscated"""
-    pattern = r'(' + '|'.join(fields) + r')=(.*?)(;|$)'
-    redacted_message = re.sub(pattern, r'\1=' + redaction + r'\3', message)
-    return redacted_message
+    pattern = r'(' + '|'.join(fields) + r')=(.*?)(' + separator + '|$)'
+    return re.sub(pattern, r'\1=' + redaction + r'\3', message)
 
 
 class RedactingFormatter(logging.Formatter):
@@ -22,9 +21,11 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields: List[str]):
+        """initializes an instance"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
+        """formats a record"""
         msg = super(RedactingFormatter, self).format(record)
         return filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
