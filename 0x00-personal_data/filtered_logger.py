@@ -5,11 +5,24 @@ import logging
 import re
 
 
+PII_FIELDS = ('email', 'phone', 'ssn', 'password', 'ip')
+
+
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """returns the log message obfuscated"""
     pattern = r'(' + '|'.join(fields) + r')=(.*?)(' + separator + '|$)'
     return re.sub(pattern, r'\1=' + redaction + r'\3', message)
+
+
+def get_logger() -> logging.Logger:
+    """a logger function"""
+    logger = logging.getLogger('user_data')
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setFormatter(RedactingFormatter)
+    logger.addHandler(handler)
+    return logger
 
 
 class RedactingFormatter(logging.Formatter):
