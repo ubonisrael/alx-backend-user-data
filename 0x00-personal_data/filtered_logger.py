@@ -56,7 +56,8 @@ def main() -> None:
                 zip(columns, row),
                 )
             msg = '{}'.format(';'.join(list(record)))
-            log_record = logging.LogRecord("user_data", logging.INFO, None, None, msg, None, None)
+            log_record = logging.LogRecord("user_data", logging.INFO,
+                                           None, None, msg, None, None)
             logger.handle(log_record)
     db.close()
 
