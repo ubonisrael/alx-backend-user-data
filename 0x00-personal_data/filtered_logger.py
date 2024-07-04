@@ -21,7 +21,7 @@ def get_logger() -> logging.Logger:
     logger = logging.getLogger('user_data')
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    handler.setFormatter(RedactingFormatter)
+    handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
     logger.addHandler(handler)
     logger.propagate = False
     return logger
@@ -29,14 +29,36 @@ def get_logger() -> logging.Logger:
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """returns a connector to a mysql db"""
-    db = mysql.connector.connect(
+    return mysql.connector.connect(
         host=os.getenv('PERSONAL_DATA_DB_HOST', "localhost"),
         user=os.getenv('PERSONAL_DATA_DB_USERNAME', "root"),
         passwd=os.getenv('PERSONAL_DATA_DB_PASSWORD', ""),
         database=os.getenv('PERSONAL_DATA_DB_NAME', ""),
         port=3306
     )
-    return db
+
+
+def main() -> None:
+    """
+    obtain a database connection using get_db and retrieve all
+    rows in the users table and display each row under a filtered format
+    """
+    fields = "name,email,phone,ssn,password,ip,last_login,user_agent"
+    columns = fields.split(',')
+    logger = get_logger()
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute("SELECT {} FROM users;".format(fields))
+        rows = cur.fetchall()
+        for row in rows:
+            record = map(
+                lambda x: '{}={}'.format(x[0], x[1]),
+                zip(columns, row),
+                )
+            msg = '{}'.format(';'.join(list(record)))
+            log_record = logging.LogRecord("user_data", logging.INFO, None, None, msg, None, None)
+            logger.handle(log_record)
+    db.close()
 
 
 class RedactingFormatter(logging.Formatter):
@@ -56,3 +78,7 @@ class RedactingFormatter(logging.Formatter):
         """formats a record"""
         msg = super(RedactingFormatter, self).format(record)
         return filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
+
+
+if __name__ == "__main__":
+    main()
