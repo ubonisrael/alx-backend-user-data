@@ -16,7 +16,11 @@ auth = None
 auth = os.getenv('AUTH_TYPE')
 if auth:
     from api.v1.auth.auth import Auth
-    auth = Auth()
+    from api.v1.auth.basic_auth import BasicAuth
+    if auth == 'basic_auth':
+        auth = BasicAuth()
+    else:
+        auth = Auth()
 
 auth_list = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
 
