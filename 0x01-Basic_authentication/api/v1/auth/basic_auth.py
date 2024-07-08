@@ -48,8 +48,11 @@ class BasicAuth(Auth):
             return None, None
         if decoded_base64_authorization_header.find(':') == -1:
             return None, None
-        user_email = decoded_base64_authorization_header.split(':')[0]
-        user_passwd = decoded_base64_authorization_header.split(':')[1]
+        # find first index of :
+        first_index = decoded_base64_authorization_header.find(':')
+        user_email = decoded_base64_authorization_header[:first_index]
+        user_passwd = decoded_base64_authorization_header[first_index + 1:]
+        print(user_email, user_passwd)
         return user_email, user_passwd
 
     def user_object_from_credentials(
