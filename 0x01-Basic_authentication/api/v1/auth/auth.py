@@ -15,13 +15,12 @@ class Auth:
             path = path + '/'
         for excluded_path in excluded_paths:
             if excluded_path[-1] == '*':
+                excluded_path = re.escape(excluded_path[:-1]) + ".*"
                 match = re.match(excluded_path, path)
                 if match is not None:
                     return False
             if path == excluded_path:
                 return False
-        # if path in excluded_paths:
-        #     return False
         return True
 
     def authorization_header(self, request=None) -> str:

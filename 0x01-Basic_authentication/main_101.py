@@ -14,7 +14,8 @@ a = Auth()
 # print(a.require_auth("/api/v1/users", ["/api/v1/status/", "/api/v1/stats"]))
 
 
-print(a.require_auth("/api/v1/status", ["/api/v1/stat*"]))
-print(a.require_auth("/api/v1/stats", ["/api/v1/stat*"]))
-print(a.require_auth("/api/v1/users", ["/api/v1/stat*"]))
+# print(a.require_auth("/api/v1/status", ["/*"]))
+# print(a.require_auth("/api/v1/stats", ["/*"]))
+# print(a.require_auth("/api/v1/users", ["/*"]))
+print(a.require_auth("/api/v1/us", ["/api/v1/ua*"]))
 
