@@ -20,7 +20,7 @@ if auth:
     from api.v1.auth.session_auth import SessionAuth
     if auth == 'basic_auth':
         auth = BasicAuth()
-    elif auth == 'session_auths':
+    elif auth == 'session_auth':
         auth = SessionAuth()
     else:
         auth = Auth()
@@ -32,15 +32,15 @@ auth_list = ['/api/v1/status/', '/api/v1/unauthorized/',
 @app.before_request
 def before_request():
     """filters requests"""
-    if auth is not None:
-        if auth.require_auth(request.path, auth_list) is True:
-            if auth.authorization_header(request) is None:
-                raise abort(401)
-            if auth.current_user(request) is None:
+    if auth:
+        if auth.require_auth(request.path, auth_list):
+            user = auth.current_user(request)
+            if auth.authorization_header(request) is None \
+                and auth.session_cookie(request) is None:
+                return None, abort(401)
+            if user is None:
                 raise abort(403)
-        request.current_user = auth.current_user(request)
-        if auth.authorization_header(request) and auth.session_cookie(request):
-            return None, abort(401)
+            request.current_user = user
 
 
 @app.errorhandler(404)
@@ -67,4 +67,4 @@ def forbidden(error) -> str:
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port)
+    app.run(host=host, port=port, debug=True)

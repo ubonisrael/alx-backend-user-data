@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Session Auth Class Module"""
 from api.v1.auth.auth import Auth
-import base64
-from typing import TypeVar
+import os
 from models.user import User
 from uuid import uuid4
+from api.v1.views import app_views
+from flask import jsonify, abort, request, make_response
 
 
 class SessionAuth(Auth):
