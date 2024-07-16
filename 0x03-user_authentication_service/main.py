@@ -53,26 +53,26 @@ Main file
 
 
 # task 3
-# from db import DB
-# from user import User
+from db import DB
+from user import User
 
-# from sqlalchemy.exc import InvalidRequestError
-# from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 
 
-# my_db = DB()
+my_db = DB()
 
-# email = 'test@test.com'
-# hashed_password = "hashedPwd"
+email = 'test@test.com'
+hashed_password = "hashedPwd"
 
-# user = my_db.add_user(email, hashed_password)
-# print(user.id)
+user = my_db.add_user(email, hashed_password)
+print(user.id)
 
-# try:
-#     my_db.update_user(user.id, hashed_password='NewPwd')
-#     print("Password updated")
-# except ValueError:
-#     print("Error")
+try:
+    my_db.update_user(user.id, hashd_password='NewPwd')
+    print("Password updated")
+except ValueError:
+    print("Error")
 
 # task 4
 # from auth import _hash_password
@@ -118,13 +118,13 @@ Main file
 
 
 # task 10
-from auth import Auth
+# from auth import Auth
 
-email = 'bob@bob.com'
-password = 'MyPwdOfBob'
-auth = Auth()
+# email = 'bob@bob.com'
+# password = 'MyPwdOfBob'
+# auth = Auth()
 
-auth.register_user(email, password)
+# auth.register_user(email, password)
 
-print(auth.create_session(email))
-print(auth.create_session("unknown@email.com"))
+# print(auth.create_session(email))
+# print(auth.create_session("unknown@email.com"))
