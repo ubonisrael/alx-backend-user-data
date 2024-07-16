@@ -14,7 +14,10 @@ from user import Base, User
 class DB:
     """DB class
     """
-    valid_query_args = ['id', 'email', 'hashed_password', 'session_id', 'reset_token']
+    valid_query_args = ['id', 'email',
+                        'hashed_password',
+                        'session_id',
+                        'reset_token']
 
     def __init__(self) -> None:
         """Initialize a new DB instance
@@ -33,14 +36,14 @@ class DB:
             DBSession = sessionmaker(bind=self._engine)
             self.__session = DBSession()
         return self.__session
-    
+
     def add_user(self, email: str, hashed_password: str) -> User:
         """adds a user to the database"""
         user = User(email=email, hashed_password=hashed_password)
         self._session.add(user)
         self._session.commit()
         return user
-    
+
     def find_user_by(self, **kwargs) -> User:
         """
         returns the first row found in the users
@@ -49,12 +52,11 @@ class DB:
         for k in kwargs:
             if k not in self.valid_query_args:
                 raise InvalidRequestError()
-        # filters = [getattr(User, key) == value for key, value in kwargs.items()]
         user = self._session.query(User).filter_by(**kwargs).first()
         if user is None:
             raise NoResultFound()
         return user
-    
+
     def update_user(self, user_id: str, **kwargs) -> None:
         """
         takes as argument a required user_id
