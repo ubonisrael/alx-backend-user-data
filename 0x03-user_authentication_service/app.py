@@ -79,7 +79,7 @@ def reset_password():
 
 
 @app.route('/reset_password', methods=['PUT'], strict_slashes=False)
-def reset_password():
+def update_password():
     """generates a reset token for an email if it exists"""
     payload = dict(request.form)
     e = payload['email']
