@@ -78,5 +78,19 @@ def reset_password():
         raise abort(403)
 
 
+@app.route('/reset_password', methods=['PUT'], strict_slashes=False)
+def reset_password():
+    """generates a reset token for an email if it exists"""
+    payload = dict(request.form)
+    e = payload['email']
+    tok = payload['reset_token']
+    new_pw = payload['new_password']
+    try:
+        tok = AUTH.update_password(reset_token=tok, password=new_pw)
+        return jsonify({"email": f"{e}", "message": "Password updated"}), 200
+    except ValueError:
+        raise abort(403)
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000", debug=True)
